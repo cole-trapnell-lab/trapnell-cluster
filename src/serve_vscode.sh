@@ -12,6 +12,10 @@ while getopts "m:c:t:" opt; do
             ;;
         \? )
             echo "Usage: serve_vscode.sh [-m memory] [-c cores] [-t timelimit]"
+            echo "Options:"
+            echo "  -m memory     Memory to allocate for the job (default: 8G)"
+            echo "  -c cores      Number of cores to allocate for the job (default: 1)"
+            echo "  -t timelimit  Time limit for the job, formatted as hours:minutes:seconds (default: 48:0:0)"
             exit 1
             ;;
     esac
