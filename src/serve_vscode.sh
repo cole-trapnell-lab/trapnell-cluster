@@ -77,7 +77,12 @@ if [ -f "${LOG_FILE}" ]; then
     
     while [ $attempts -lt $max_attempts ]; do
         # Check if the GitHub login line exists in the log file
-        if grep -q "To grant access to the server, please log into" "${LOG_FILE}"; then
+        if grep -q "Found token in keyring"; then
+            echo ""
+            echo "Server is already authenticated. Open VS Code, select 'Connect to Tunnel...' and then 'GitHub' to connect to the server."
+            echo ""
+            break
+        elif grep -q "To grant access to the server, please log into" "${LOG_FILE}"; then
             # Extract and display the line containing the GitHub login URL and code
             github_line=$(grep "To grant access to the server, please log into" "${LOG_FILE}")
             echo ""
