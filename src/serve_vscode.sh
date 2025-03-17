@@ -10,11 +10,8 @@ while getopts "m:c:t:w:" opt; do
         t )
             TIMELIMIT=$OPTARG
             ;;
-        w )
-            WAIT_TIME=$OPTARG
-            ;;
         \? )
-            echo "Usage: serve_vscode.sh [-m memory] [-c cores] [-t timelimit] [-w wait_time]"
+            echo "Usage: serve_vscode.sh [-m memory] [-c cores] [-t timelimit]"
             exit 1
             ;;
     esac
@@ -24,7 +21,6 @@ done
 MEM=${MEM:-8G}
 CORES=${CORES:-1}
 TIMELIMIT=${TIMELIMIT:-48:0:0}
-WAIT_TIME=${WAIT_TIME:-5}
 
 SCRIPT="module load code/1.92 ; code tunnel --accept-server-license-terms --name vscode --verbose"
 
@@ -51,22 +47,24 @@ if [ ! -z "$existing_jobs" ]; then
         echo "Waiting for jobs to terminate..."
         sleep 3
 
-        if [ -f "${LOG_FILE}" ]; then
-            rm "${LOG_FILE}"
-        fi
-        if [ -f "${ERR_FILE}" ]; then
-            rm "${ERR_FILE}"
-        fi
     else
         echo "Keeping existing jobs. Note that multiple VS Code tunnel sessions may cause conflicts."
     fi
 fi
 
-cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} < <(echo \"${SCRIPT}\")"
-echo -e "Submitting a VSCode server with the command:\n\t${cmd}"
+if [ -f "${LOG_FILE}" ]; then
+    rm "${LOG_FILE}"
+fi
+if [ -f "${ERR_FILE}" ]; then
+    rm "${ERR_FILE}"
+fi
+
+#cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} < <(echo \"${SCRIPT}\")"
+cmd="echo \"${SCRIPT}\" | qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N vscode"
+echo "Submitting a VSCode server with the command:\n\t${cmd}"
 eval "${cmd}"
 
-# Wait for the specified time to let the job start and the log file be created
+WAIT_TIME=5
 echo "Waiting for ${WAIT_TIME} seconds for the job to start..."
 sleep ${WAIT_TIME}
 
@@ -74,7 +72,7 @@ sleep ${WAIT_TIME}
 if [ -f "${LOG_FILE}" ]; then
     # Wait for the GitHub login line to appear (try for up to 10 seconds)
     echo "Looking for GitHub login information..."
-    max_attempts=10
+    max_attempts=30
     attempts=0
     
     while [ $attempts -lt $max_attempts ]; do
