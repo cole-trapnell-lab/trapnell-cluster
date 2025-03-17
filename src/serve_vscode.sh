@@ -11,7 +11,7 @@ while getopts "m:c:t:" opt; do
             TIMELIMIT=$OPTARG
             ;;
         \? )
-            echo "Usage: serve_vscode.sh [-m memory] [-c cores] [-t timelimit]"
+            echo "Usage: serve_vscode [-m memory] [-c cores] [-t timelimit]"
             echo "Options:"
             echo "  -m memory     Memory to allocate for the job (default: 8G)"
             echo "  -c cores      Number of cores to allocate for the job (default: 1)"
@@ -28,7 +28,6 @@ TIMELIMIT=${TIMELIMIT:-48:0:0}
 
 SCRIPT="module load code/1.92 ; code tunnel --accept-server-license-terms --name vscode --verbose"
 
-mkdir -p $HOME/nobackup/log
 LOG_FILE=$HOME/nobackup/log/vscode.o
 ERR_FILE=$HOME/nobackup/log/vscode.e
 

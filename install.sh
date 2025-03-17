@@ -3,6 +3,7 @@ BIN=$HOME/bin
 SGE=$HOME/sge
 mkdir -p $BIN
 mkdir -p $SGE
+mkdir -p $HOME/nobackup/log
 
 for script in $(ls src); do
     DESTINATION=$BIN/$(basename $script)
