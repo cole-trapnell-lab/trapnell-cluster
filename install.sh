@@ -12,3 +12,7 @@ for script in $(ls src); do
 done
 
 cp src/* $SGE
+
+if [[ ":$PATH:" != *":$BIN:"* ]]; then
+    export PATH=$PATH:$BIN
+fi
