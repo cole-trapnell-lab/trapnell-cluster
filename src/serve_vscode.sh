@@ -26,8 +26,6 @@ MEM=${MEM:-8G}
 CORES=${CORES:-1}
 TIMELIMIT=${TIMELIMIT:-48:0:0}
 
-SCRIPT="module load code/1.92 ; code tunnel --accept-server-license-terms --name vscode --verbose"
-
 LOG_FILE=$HOME/nobackup/log/vscode.o
 ERR_FILE=$HOME/nobackup/log/vscode.e
 
@@ -63,7 +61,7 @@ if [ -f "${ERR_FILE}" ]; then
 fi
 
 #cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} < <(echo \"${SCRIPT}\")"
-cmd="echo \"${SCRIPT}\" | qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N vscode"
+cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N vscode ${HOME}/sge/serve_vscode.sge"
 echo "Submitting a VSCode server with the command:\n\t${cmd}"
 eval "${cmd}"
 

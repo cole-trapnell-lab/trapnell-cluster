@@ -1,0 +1,3 @@
+#!/bin/bash
+module load code/1.92
+code tunnel --accept-server-license-terms --name vscode --verbose
