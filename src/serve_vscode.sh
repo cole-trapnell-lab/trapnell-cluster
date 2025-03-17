@@ -1,5 +1,5 @@
 #!/bin/bash
-while getopts "m:c:t:w:" opt; do
+while getopts "m:c:t:" opt; do
     case ${opt} in
         m )
             MEM=$OPTARG
