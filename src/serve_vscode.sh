@@ -51,6 +51,8 @@ if [ ! -z "$existing_jobs" ]; then
     else
         echo "Keeping existing jobs. Note that multiple VS Code tunnel sessions may cause conflicts."
     fi
+
+	echo ""
 fi
 
 if [ -f "${LOG_FILE}" ]; then
@@ -62,7 +64,7 @@ fi
 
 #cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} < <(echo \"${SCRIPT}\")"
 cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N vscode ${HOME}/sge/serve_vscode.sge"
-echo "Submitting a VSCode server with the command:\n\t${cmd}"
+echo -e "Submitting a VSCode server with the command:\n\t${cmd}\n\n"
 eval "${cmd}"
 
 WAIT_TIME=5
@@ -78,7 +80,7 @@ if [ -f "${LOG_FILE}" ]; then
     
     while [ $attempts -lt $max_attempts ]; do
         # Check if the GitHub login line exists in the log file
-        if grep -q "Found token in keyring"; then
+        if grep -q "Found token in keyring" "${LOG_FILE}"; then
             echo ""
             echo "Server is already authenticated. Open VS Code, select 'Connect to Tunnel...' and then 'GitHub' to connect to the server."
             echo ""
