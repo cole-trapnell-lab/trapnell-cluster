@@ -5,14 +5,14 @@ mkdir -p $BIN
 mkdir -p $SGE
 mkdir -p $HOME/nobackup/log
 
-for script in $(ls src); do
-    DESTINATION=$BIN/$(basename $script)
-    cp src/$script $DESTINATION
+for script in $(ls src/*.sh); do
+    DESTINATION=$BIN/$(basename $script .sh)
+    cp $script $DESTINATION
     chmod +x $DESTINATION
 done
 
-cp src/* $SGE
+cp sge/* $SGE
 
-if [[ ":$PATH:" != *":$BIN:"* ]]; then
+if [ ":$PATH:" != *":$BIN:"* ]; then
     export PATH=$PATH:$BIN
 fi
