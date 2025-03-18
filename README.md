@@ -4,7 +4,7 @@ This repository contains common scripts one might use while working on Nexus.
 ## Installation
 Run:
 ```sh
-sh ./install.sh
+./install.sh
 ```
 
 This will create the following directories in `$HOME`, if they do not exist already:
