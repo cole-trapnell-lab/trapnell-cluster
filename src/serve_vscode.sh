@@ -1,5 +1,13 @@
 #!/bin/bash
-while getopts "m:c:t:" opt; do
+USAGE="""
+Usage: serve_vscode [-m memory] [-c cores] [-t timelimit] [-h]
+Options:
+  -m memory     Memory to allocate for the job (default: 8G)
+  -c cores      Number of cores to allocate for the job (default: 1)
+  -t timelimit  Time limit for the job, formatted as hours:minutes:seconds (default: 48:0:0)
+  -h            Display this help message
+"""
+while getopts "m:c:t:h" opt; do
     case ${opt} in
         m )
             MEM=$OPTARG
@@ -10,12 +18,12 @@ while getopts "m:c:t:" opt; do
         t )
             TIMELIMIT=$OPTARG
             ;;
+        h )
+            echo "$USAGE"
+            exit 0
+            ;;
         \? )
-            echo "Usage: serve_vscode [-m memory] [-c cores] [-t timelimit]"
-            echo "Options:"
-            echo "  -m memory     Memory to allocate for the job (default: 8G)"
-            echo "  -c cores      Number of cores to allocate for the job (default: 1)"
-            echo "  -t timelimit  Time limit for the job, formatted as hours:minutes:seconds (default: 48:0:0)"
+            echo "$USAGE"
             exit 1
             ;;
     esac
