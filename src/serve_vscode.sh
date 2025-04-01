@@ -1,13 +1,14 @@
 #!/bin/bash
 USAGE="""
-Usage: serve_vscode [-m memory] [-c cores] [-t timelimit] [-h]
+Usage: serve_vscode [-m memory] [-c cores] [-t timelimit] [-n node]
 Options:
   -m memory     Memory to allocate for the job (default: 8G)
   -c cores      Number of cores to allocate for the job (default: 1)
   -t timelimit  Time limit for the job, formatted as hours:minutes:seconds (default: 48:0:0)
+  -n node       What node to use as the server (default: first available)
   -h            Display this help message
 """
-while getopts "m:c:t:h" opt; do
+while getopts "m:c:t:n:h" opt; do
     case ${opt} in
         m )
             MEM=$OPTARG
@@ -18,6 +19,9 @@ while getopts "m:c:t:h" opt; do
         t )
             TIMELIMIT=$OPTARG
             ;;
+		n )
+			NODE=$OPTARG
+			;;
         h )
             echo "$USAGE"
             exit 0
@@ -47,7 +51,7 @@ if [ ! -z "$existing_jobs" ]; then
     
     read -p "Do you want to terminate all existing VS Code tunnel jobs? [Y/n]: " terminate
     
-    if [[ "$terminate" == "y" || "$terminate" == "Y" || "$terminate" == "" ]]; then
+    if [ "$terminate" = "y" ] || [ "$terminate" = "Y" ] || [ -z "$terminate" ]; then
         for job_id in $existing_jobs; do
             echo "Terminating job $job_id..."
             qdel $job_id
@@ -70,8 +74,11 @@ if [ -f "${ERR_FILE}" ]; then
     rm "${ERR_FILE}"
 fi
 
-#cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} < <(echo \"${SCRIPT}\")"
-cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N vscode ${HOME}/sge/serve_vscode.sge"
+FLAGS="-o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N vscode"
+if [ -n "${NODE}" ]; then
+    FLAGS="${FLAGS} -l hostname=${NODE}"
+fi
+cmd="qsub ${FLAGS} ${HOME}/sge/serve_vscode.sge"
 echo -e "Submitting a VSCode server with the command:\n\t${cmd}\n\n"
 eval "${cmd}"
 
