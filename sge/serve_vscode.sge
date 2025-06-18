@@ -1,3 +1,28 @@
 #!/bin/bash
+while [[ $# -gt 0 ]]; do
+    case $1 in
+    -r)
+        R_VERSION="$2"
+        shift
+        shift
+        ;;
+    -p)
+        PYTHON_VERSION="$2"
+        shift
+        shift
+        ;;
+    *)
+        echo "Invalid argument in $(basename $0)"
+        exit 1
+        ;;
+    esac
+done
 module load code/1.92
+if [[ -n "$R_VERSION" ]]; then
+    module load R/$R_VERSION
+fi
+if [[ -n "$PYTHON_VERSION" ]]; then
+    module load python/$PYTHON_VERSION
+fi
+
 code tunnel --accept-server-license-terms --name vscode --verbose
