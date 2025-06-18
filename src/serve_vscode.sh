@@ -123,7 +123,7 @@ if [ -f "${LOG_FILE}" ]; then
         elif grep -q "To grant access to the server, please log into" "${LOG_FILE}"; then
             # Extract and display the line containing the GitHub login URL and code
             github_line=$(grep "To grant access to the server, please log into" "${LOG_FILE}")
-            AUTH_MSG="-------------------------------------------------------\n$github_line\n-------------------------------------------------------\n\nAfter authenticating, open VS Code, select 'Connect to Tunnel...' and then 'GitHub' to connect to the server."
+            AUTH_MSG="\n-------------------------------------------------------\n$github_line\n-------------------------------------------------------\n\nAfter authenticating, open VS Code, select 'Connect to Tunnel...' and then 'GitHub' to connect to the server."
             break
         fi
         # Increment attempts counter
