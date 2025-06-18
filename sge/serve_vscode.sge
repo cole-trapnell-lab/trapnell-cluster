@@ -19,7 +19,7 @@ while [[ $# -gt 0 ]]; do
 done
 module load code/1.92
 if [[ -n "$R_VERSION" ]]; then
-    module load r/$R_VERSION
+    module load R/$R_VERSION
 fi
 if [[ -n "$PYTHON_VERSION" ]]; then
     module load python/$PYTHON_VERSION
