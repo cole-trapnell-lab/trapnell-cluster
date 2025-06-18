@@ -114,40 +114,43 @@ if [ -f "${LOG_FILE}" ]; then
     max_attempts=30
     attempts=0
     
+    AUTH_MSG=""
     while [ $attempts -lt $max_attempts ]; do
         # Check if the GitHub login line exists in the log file
         if grep -q "Found token in keyring" "${LOG_FILE}"; then
-            echo ""
-            echo "Server is already authenticated. Open VS Code, select 'Connect to Tunnel...' and then 'GitHub' to connect to the server."
-            echo ""
+            AUTH_MSG="Server is already authenticated. Open VS Code, select 'Connect to Tunnel...' and then 'GitHub' to connect to the server."
             break
         elif grep -q "To grant access to the server, please log into" "${LOG_FILE}"; then
             # Extract and display the line containing the GitHub login URL and code
             github_line=$(grep "To grant access to the server, please log into" "${LOG_FILE}")
-            echo ""
-            echo "-------------------------------------------------------"
-            echo "$github_line"
-            echo "-------------------------------------------------------"
-            echo ""
-            echo "After authenticating, open VS Code, select 'Connect to Tunnel...' and then 'GitHub' to connect to the server."
-            echo ""
+            AUTH_MSG="-------------------------------------------------------\n$github_line\n-------------------------------------------------------\n\nAfter authenticating, open VS Code, select 'Connect to Tunnel...' and then 'GitHub' to connect to the server."
             break
         fi
-        
         # Increment attempts counter
         attempts=$((attempts + 1))
         # Wait for 1 second before checking again
         sleep 1
     done
-    
     # If we couldn't find the line after all attempts
     if [ $attempts -eq $max_attempts ]; then
-        echo "Could not find GitHub login information after ${max_attempts} seconds."
-        echo "Please check the log file manually at: ${LOG_FILE}"
-        echo "If you encounter issues, examine the error file at: ${ERR_FILE}"
+        AUTH_MSG="Could not find GitHub login information after ${max_attempts} seconds.\nPlease check the log file manually at: ${LOG_FILE}\nIf you encounter issues, examine the error file at: ${ERR_FILE}"
     fi
 else
     echo "Log file not found at ${LOG_FILE} after waiting ${WAIT_TIME} seconds for file creation."
     echo "The job may still be in the queue or there might be an issue."
     echo "You can check job status with 'qstat -u $USER' and examine error output at: ${ERR_FILE}"
+    exit 0
 fi
+
+sleep 1
+
+# Check for errors loading modules
+module_errors=$(grep "ERROR: Unable to locate a modulefile for" ~/nobackup/log/vscode.e 2>/dev/null)
+if [ -n "$module_errors" ]; then
+    echo "Error loading modules. Check your module versions are valid. Error message:"
+    echo "$module_errors"
+    exit 1
+fi
+
+# Display the authentication message
+echo -e "$AUTH_MSG"
