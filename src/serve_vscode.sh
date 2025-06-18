@@ -1,30 +1,60 @@
 #!/bin/bash
-while getopts "m:c:t:" opt; do
-    case ${opt} in
-        m )
-            MEM=$OPTARG
+USAGE="Usage: serve_vscode [-m|--memory memory] [-c|--cores cores] [-t|--timelimit timelimit] [-r|--r_version r_version] [-p|--python_version python_version]\n\
+Options:\n\
+  -m, --memory     Memory to allocate for the job (default: 8G)\n\
+  -c, --cores      Number of cores to allocate for the job (default: 1)\n\
+  -t, --timelimit  Time limit for the job, formatted as hours:minutes:seconds (default: 48:0:0)\n\
+  -r, --r_version  R version to use, formatted as `x.x.x`. Default is to use what is in `~/.bashrc` or equivalent\n\
+  -p, --python_version  Python version to use, formatted as `x.x.x`. Default is to use what is in `~/.bashrc` or equivalent\n\
+  -h, --help       Show this help message and exit\n"
+
+# Defaults
+MEM="8G"
+CORES="1"
+TIMELIMIT="48:0:0"
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -m|--memory)
+            MEM="$2"
+            shift
+            shift
             ;;
-        c )
-            CORES=$OPTARG
+        -c|--cores)
+            CORES="$2"
+            shift
+            shift
             ;;
-        t )
-            TIMELIMIT=$OPTARG
+        -t|--timelimit)
+            TIMELIMIT="$2"
+            shift
+            shift
             ;;
-        \? )
-            echo "Usage: serve_vscode [-m memory] [-c cores] [-t timelimit]"
-            echo "Options:"
-            echo "  -m memory     Memory to allocate for the job (default: 8G)"
-            echo "  -c cores      Number of cores to allocate for the job (default: 1)"
-            echo "  -t timelimit  Time limit for the job, formatted as hours:minutes:seconds (default: 48:0:0)"
+        -r|--r_version)
+            R_VERSION="$2"
+            shift
+            shift
+            ;;
+        -p|--python_version)
+            PYTHON_VERSION="$2"
+            shift
+            shift
+            ;;
+        -h|--help)
+            echo -e "${USAGE}"
+            exit 0
+            ;;
+        -*|--*)
+            echo "Unknown option: $1"
+            echo -e "${USAGE}"
+            exit 1
+            ;;
+        *)
+            echo -e "${USAGE}"
             exit 1
             ;;
     esac
 done
-
-# Set default values if not provided
-MEM=${MEM:-8G}
-CORES=${CORES:-1}
-TIMELIMIT=${TIMELIMIT:-48:0:0}
 
 LOG_FILE=$HOME/nobackup/log/vscode.o
 ERR_FILE=$HOME/nobackup/log/vscode.e
@@ -62,8 +92,14 @@ if [ -f "${ERR_FILE}" ]; then
     rm "${ERR_FILE}"
 fi
 
-#cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} < <(echo \"${SCRIPT}\")"
 cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N vscode ${HOME}/sge/serve_vscode.sge"
+# Add R and Python versions to the command if specified
+if [ -n "${R_VERSION}" ]; then
+    cmd+=" -r ${R_VERSION}"
+fi
+if [ -n "${PYTHON_VERSION}" ]; then
+    cmd+=" -p ${PYTHON_VERSION}"
+fi
 echo -e "Submitting a VSCode server with the command:\n\t${cmd}\n\n"
 eval "${cmd}"
 
