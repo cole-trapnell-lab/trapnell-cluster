@@ -4,8 +4,8 @@ Options:\n\
   -m, --memory     Memory to allocate for the job (default: 8G)\n\
   -c, --cores      Number of cores to allocate for the job (default: 1)\n\
   -t, --timelimit  Time limit for the job, formatted as hours:minutes:seconds (default: 48:0:0)\n\
-  -r, --r_version  R version to use, formatted as `x.x.x`. Default is to use what is in `~/.bashrc` or equivalent\n\
-  -p, --python_version  Python version to use, formatted as `x.x.x`. Default is to use what is in `~/.bashrc` or equivalent\n\
+  -r, --r_version  R version to use, formatted as 'x.x.x'. Default is to use what is in '~/.bashrc' or equivalent\n\
+  -p, --python_version  Python version to use, formatted as 'x.x.x'. Default is to use what is in '~/.bashrc' or equivalent\n\
   -h, --help       Show this help message and exit\n"
 
 # Defaults
