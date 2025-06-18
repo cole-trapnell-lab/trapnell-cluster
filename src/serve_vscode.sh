@@ -69,7 +69,7 @@ if [ ! -z "$existing_jobs" ]; then
     
     read -p "Do you want to terminate all existing VS Code tunnel jobs? [Y/n]: " terminate
     
-    if [[ "$terminate" == "y" || "$terminate" == "Y" || "$terminate" == "" ]]; then
+    if [ "$terminate" = "y" ] || [ "$terminate" = "Y" ] || [ -z "$terminate" ]; then
         for job_id in $existing_jobs; do
             echo "Terminating job $job_id..."
             qdel $job_id
