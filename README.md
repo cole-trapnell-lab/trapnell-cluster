@@ -2,6 +2,14 @@
 This repository contains common scripts one might use while working on Nexus.
 
 ## Installation
+### On your own computer
+Edit your `~/.ssh/config` file to contain the following:
+```
+Host *.gs.washington.edu
+    User <your-GS-username-here>
+    EnableEscapeCommandline yes
+```
+### On Nexus
 Run:
 ```sh
 ./install.sh
