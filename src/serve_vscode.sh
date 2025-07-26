@@ -1,9 +1,10 @@
 #!/bin/bash
-USAGE="Usage: serve_vscode [-m|--memory memory] [-c|--cores cores] [-t|--timelimit timelimit] [-r|--r_version r_version] [-p|--python_version python_version]\n\
+USAGE="Usage: serve_vscode [-m|--memory memory] [-c|--cores cores] [-t|--timelimit timelimit] [-n|--name server_name] [-r|--r_version r_version] [-p|--python_version python_version]\n\
 Options:\n\
   -m, --memory     Memory to allocate for the job (default: 8G)\n\
   -c, --cores      Number of cores to allocate for the job (default: 1)\n\
   -t, --timelimit  Time limit for the job, formatted as hours:minutes:seconds (default: 48:0:0)\n\
+  -n, --name       Name of the server, will be appended to the job name as 'vscode_<name>'\n\
   -r, --r_version  R version to use, formatted as 'x.x.x'. Default is to use what is in '~/.bashrc' or equivalent\n\
   -p, --python_version  Python version to use, formatted as 'x.x.x'. Default is to use what is in '~/.bashrc' or equivalent\n\
   -h, --help       Show this help message and exit\n"
@@ -12,6 +13,7 @@ Options:\n\
 MEM="8G"
 CORES="1"
 TIMELIMIT="48:0:0"
+SERVER_NAME="vscode"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -27,6 +29,11 @@ while [[ $# -gt 0 ]]; do
             ;;
         -t|--timelimit)
             TIMELIMIT="$2"
+            shift
+            shift
+            ;;
+        -n|--name)
+            SERVER_NAME="${SERVER_NAME}_$2"
             shift
             shift
             ;;
@@ -92,7 +99,7 @@ if [ -f "${ERR_FILE}" ]; then
     rm "${ERR_FILE}"
 fi
 
-cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N vscode ${HOME}/sge/serve_vscode.sge"
+cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N ${SERVER_NAME} ${HOME}/sge/serve_vscode.sge"
 # Add R and Python versions to the command if specified
 if [ -n "${R_VERSION}" ]; then
     cmd+=" -r ${R_VERSION}"
