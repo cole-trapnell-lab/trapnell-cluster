@@ -11,6 +11,11 @@ while [[ $# -gt 0 ]]; do
         shift
         shift
         ;;
+	-n)
+		NAME="$2"
+		shift
+		shift
+		;;
     *)
         echo "Invalid argument in $(basename $0)"
         exit 1
@@ -25,4 +30,4 @@ if [[ -n "$PYTHON_VERSION" ]]; then
     module load python/$PYTHON_VERSION
 fi
 
-code tunnel --accept-server-license-terms --name vscode --verbose
+code tunnel --accept-server-license-terms --name ${NAME} --verbose --cli-data-dir ~/.${NAME}
