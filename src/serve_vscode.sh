@@ -99,7 +99,7 @@ if [ -f "${ERR_FILE}" ]; then
     rm "${ERR_FILE}"
 fi
 
-cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N ${SERVER_NAME} ${HOME}/sge/serve_vscode.sge"
+cmd="qsub -o ${LOG_FILE} -e ${ERR_FILE} -l mfree=${MEM} -pe serial ${CORES} -l h_rt=${TIMELIMIT} -N ${SERVER_NAME} ${HOME}/sge/serve_vscode.sge -n ${SERVER_NAME}"
 # Add R and Python versions to the command if specified
 if [ -n "${R_VERSION}" ]; then
     cmd+=" -r ${R_VERSION}"
