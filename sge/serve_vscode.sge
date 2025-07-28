@@ -30,4 +30,4 @@ if [[ -n "$PYTHON_VERSION" ]]; then
     module load python/$PYTHON_VERSION
 fi
 
-code tunnel --accept-server-license-terms --name ${NAME} --verbose
+code tunnel --accept-server-license-terms --name ${NAME} --verbose --cli-data-dir ~/.${NAME}
