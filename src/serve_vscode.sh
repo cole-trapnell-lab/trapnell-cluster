@@ -12,7 +12,7 @@ Options:\n\
 # Defaults
 MEM="8G"
 CORES="1"
-TIMELIMIT="48:0:0"
+TIMELIMIT="12:0:0"
 SERVER_NAME="vscode"
 
 while [[ $# -gt 0 ]]; do
