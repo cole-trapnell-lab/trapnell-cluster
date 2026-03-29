@@ -64,18 +64,18 @@ df -h /net/trapnell/vol1
 
 Check the size of a directory:
 ```sh
-du -h -d 0 \<dirname\>
+du -h -d 0 <dirname>
 ```
 
 Check the size of a directory and all directories one level deep:
 ```sh
-du -h -d 1 \<dirname\>
+du -h -d 1 <dirname>
 ```
 
 GS IT runs a full audit of disc usage once a month. To view it, start an interactive job with 8G and then run:
 ```sh
 cd /net/trapnell/vol1/diskusage
-bzcat \<filename\>  ncdu -f -
+bzcat <filename>  ncdu -f -
 ```
 
 ### Nextflow
@@ -84,10 +84,10 @@ Nextflow work should be placed in a `nobackup` directory. To do this, you can ei
 
 You can view the status of all your past Nextflow runs by running `nextflow log`. To view more specific details about a specific run, run:
 ```sh
-nextflow log -f name,status,attempt,realtime,workdir \<runname\>
+nextflow log -f name,status,attempt,realtime,workdir <runname>
 ```
 
-Work directories can take up a lot of space. When you are done with a Nextflow run, delete it with `nextflow clean -f \<runname\>`. The outputs will still be saved in the `publishDir` specified in the config.
+Work directories can take up a lot of space. When you are done with a Nextflow run, delete it with `nextflow clean -f <runname>`. The outputs will still be saved in the `publishDir` specified in the config.
 
 ## Contributing
 
