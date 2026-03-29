@@ -1,0 +1,32 @@
+_nobackup <- function() {
+  if (nchar(Sys.getenv("TMP")) > 0) {
+    return(Sys.getenv("TMP"))
+  } else {
+    return(file.path(Sys.getenv("HOME"), "nobackup"))
+  }
+}
+
+# Default matrix_control list for non-pca related BPCells temporary matrix files.
+monocle3:::set_global_variable('matrix_control_bpcells_unrestricted',
+                                list(matrix_class = 'BPCells',
+                                     matrix_mode = 'dir',
+                                     matrix_type = 'double',
+                                     matrix_compress = FALSE,
+                                     matrix_path = _nobackup(),
+                                     matrix_buffer_size = 8192L,
+                                     matrix_bpcells_copy = TRUE)
+                                )
+
+# Default matrix_control list for pca-related BPCells temporary matrix files.
+monocle3:::set_global_variable('matrix_control_bpcells_pca',
+                                list(matrix_class = 'BPCells',
+                                     matrix_mode = 'dir',
+                                     matrix_type = 'double',
+                                     matrix_compress = FALSE,
+                                     matrix_path = _nobackup(),
+                                     matrix_buffer_size = 8192L,
+                                     matrix_bpcells_copy = TRUE)
+                                )
+
+# Use the system's GNU tar rather than R's builtin tar. This gets past issues where tar has to handle files larger than 8G
+Sys.setenv("tar" = paste(Sys.getenv("TAR"), "-H", "gnu"))
