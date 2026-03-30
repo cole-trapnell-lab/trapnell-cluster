@@ -1,9 +1,7 @@
-_nobackup <- function() {
-  if (nchar(Sys.getenv("TMP")) > 0) {
-    return(Sys.getenv("TMP"))
-  } else {
-    return(file.path(Sys.getenv("HOME"), "nobackup"))
-  }
+if (nchar(Sys.getenv("TMP")) > 0) {
+  matrix_path <- Sys.getenv("TMP")
+} else {
+  matrix_path <- file.path(Sys.getenv("HOME"), "nobackup")
 }
 
 # Default matrix_control list for non-pca related BPCells temporary matrix files.
@@ -12,7 +10,7 @@ monocle3:::set_global_variable('matrix_control_bpcells_unrestricted',
                                      matrix_mode = 'dir',
                                      matrix_type = 'double',
                                      matrix_compress = FALSE,
-                                     matrix_path = _nobackup(),
+                                     matrix_path = matrix_path,
                                      matrix_buffer_size = 8192L,
                                      matrix_bpcells_copy = TRUE)
                                 )
@@ -23,7 +21,7 @@ monocle3:::set_global_variable('matrix_control_bpcells_pca',
                                      matrix_mode = 'dir',
                                      matrix_type = 'double',
                                      matrix_compress = FALSE,
-                                     matrix_path = _nobackup(),
+                                     matrix_path = matrix_path,
                                      matrix_buffer_size = 8192L,
                                      matrix_bpcells_copy = TRUE)
                                 )
