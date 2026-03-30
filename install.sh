@@ -32,5 +32,7 @@ fi
 if [ $(grep gpujobs $ALIAS_FILE | wc -l) == 0 ]; then
     echo "alias gpujobs='labjobs | grep -E \"t0(01|05|08|10|11)\"'" >> $ALIAS_FILE
 fi
-echo "Please add the following line to your ~/.bashrc or related shell configuration file to ensure the new aliases are available in future sessions:"
+
+echo "✅ Installation complete!"
+echo "ℹ️  Note that for some shortcuts to work, you must add the following line to your ~/.bashrc or related shell configuration file:"
 echo "source $ALIAS_FILE"
