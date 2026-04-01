@@ -19,14 +19,20 @@ if [ ":$PATH:" != *":$BIN:"* ]; then
 fi
 
 # Aliases
-if [ `alias | grep myjobs | wc -l` == 0 ]; then
-    echo "alias myjobs='qstat -u $USER'" >> ~/.common_aliases
+ALIAS_FILE=$HOME/.common_aliases
+if [ ! -f $ALIAS_FILE ]; then
+    touch $ALIAS_FILE
 fi
-if [ `alias | grep labjobs | wc -l` == 0 ]; then
-    echo "alias labjobs='qstat -q trapnell'" >> ~/.common_aliases
+if [  $(grep myjobs $ALIAS_FILE | wc -l) == 0 ]; then
+    echo "alias myjobs='qstat -u $USER'" >> $ALIAS_FILE
 fi
-if [ `alias | grep gpujobs | wc -l` == 0 ]; then
-    echo "alias gpujobs='labjobs | grep -E \"t0(01|05|08|10|11)\"'" >> ~/.common_aliases
+if [ $(grep labjobs $ALIAS_FILE | wc -l) == 0 ]; then
+    echo "alias labjobs='qstat -q trapnell'" >> $ALIAS_FILE
 fi
-echo "Please add the following line to your ~/.bashrc or related shell configuration file to ensure the new aliases are available in future sessions:"
-echo "source ~/.common_aliases"
+if [ $(grep gpujobs $ALIAS_FILE | wc -l) == 0 ]; then
+    echo "alias gpujobs='labjobs | grep -E \"t0(01|05|08|10|11)\"'" >> $ALIAS_FILE
+fi
+
+echo "✅ Installation complete!"
+echo "ℹ️  Note that for some shortcuts to work, you must add the following line to your ~/.bashrc or related shell configuration file:"
+echo "source $ALIAS_FILE"
